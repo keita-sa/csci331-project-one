@@ -6,12 +6,13 @@ class PCBWithLinkedList:
 def create_with_linked_list(parent, pcb_list):
     new_pcb = PCBWithLinkedList(parent)
     pcb_list.append(new_pcb)
-    parent.children.append(new_pcb)
+    if parent is not None:
+        parent.children.append(new_pcb)
 
 def destroy_with_linked_list(pcb, pcb_list):
     for child in pcb.children:
         destroy_with_linked_list(child, pcb_list)
-        pcb_list.remove(child)
+    pcb_list.remove(pcb)
 
 class PCBWithoutLinkedList:
     def __init__(self, parent=None):
@@ -23,44 +24,34 @@ class PCBWithoutLinkedList:
 def create_without_linked_list(parent, pcb_list):
     new_pcb = PCBWithoutLinkedList(parent)
     pcb_list.append(new_pcb)
-
-    if parent:
-        if not parent.first_child:
+    if parent is not None:
+        if parent.first_child is None:
             parent.first_child = new_pcb
         else:
             sibling = parent.first_child
-            while sibling.younger_sibling:
+            while sibling.younger_sibling is not None:
                 sibling = sibling.younger_sibling
             sibling.younger_sibling = new_pcb
             new_pcb.older_sibling = sibling
 
 def destroy_without_linked_list(pcb, pcb_list):
-    while pcb.first_child:
+    if pcb.first_child is not None:
         destroy_without_linked_list(pcb.first_child, pcb_list)
+    if pcb.older_sibling is not None:
+        pcb.older_sibling.younger_sibling = pcb.younger_sibling
+    if pcb.younger_sibling is not None:
+        pcb.younger_sibling.older_sibling = pcb.older_sibling
     pcb_list.remove(pcb)
-    if pcb.parent:
-        if pcb.parent.first_child == pcb:
-            pcb.parent.first_child = pcb.younger_sibling
-        if pcb.older_sibling:
-            pcb.older_sibling.younger_sibling = pcb.younger_sibling
-        if pcb.younger_sibling:
-            pcb.younger_sibling.older_sibling = pcb.older_sibling
 
-# Test program
-pcb_list_with_linked_list = [PCBWithLinkedList()]  # Initialize with PCB[0]
-pcb_list_without_linked_list = [PCBWithoutLinkedList()]  # Initialize with PCB[0]
+def test_process_creation_destruction(pcb_list):
+    create_with_linked_list(None, pcb_list)  # Create the first process
+    create_with_linked_list(pcb_list[0], pcb_list)  # Create the second process
+    create_with_linked_list(pcb_list[0], pcb_list)  # Create the third process
+    create_with_linked_list(pcb_list[2], pcb_list)  # Create the fourth process
+    create_with_linked_list(pcb_list[0], pcb_list)  # Create the fifth process
 
-# Create processes
-create_with_linked_list(pcb_list_with_linked_list[0], pcb_list_with_linked_list)  # PCB[1]
-create_with_linked_list(pcb_list_with_linked_list[0], pcb_list_with_linked_list)  # PCB[2]
-create_with_linked_list(pcb_list_with_linked_list[2], pcb_list_with_linked_list)  # PCB[3]
-create_with_linked_list(pcb_list_with_linked_list[0], pcb_list_with_linked_list)  # PCB[4]
+    destroy_with_linked_list(pcb_list[0], pcb_list)  # Destroy all descendants of the first process
 
-create_without_linked_list(pcb_list_without_linked_list[0], pcb_list_without_linked_list)  # PCB[1]
-create_without_linked_list(pcb_list_without_linked_list[0], pcb_list_without_linked_list)  # PCB[2]
-create_without_linked_list(pcb_list_without_linked_list[2], pcb_list_without_linked_list)  # PCB[3]
-create_without_linked_list(pcb_list_without_linked_list[0], pcb_list_without_linked_list)  # PCB[4]
+pcb_list_with_linked_list = []
 
-# Destroy processes
-destroy_with_linked_list(pcb_list_with_linked_list[0], pcb_list_with_linked_list)
-destroy_without_linked_list(pcb_list_without_linked_list[0], pcb_list_without_linked_list)
+test_process_creation_destruction(pcb_list_with_linked_list)
