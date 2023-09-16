@@ -8,7 +8,7 @@ from main import destroy_without_linked_list
 import time
 
 # Test program with timing measurements
-iterations = 10000
+iterations = 1000000
 
 # Test with linked list
 start_time = time.time()
