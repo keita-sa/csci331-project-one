@@ -52,6 +52,6 @@ def test_process_creation_destruction(pcb_list):
 
     destroy_with_linked_list(pcb_list[0], pcb_list)  # Destroy all descendants of the first process
 
-pcb_list_with_linked_list = []
 
+pcb_list_with_linked_list = []
 test_process_creation_destruction(pcb_list_with_linked_list)
