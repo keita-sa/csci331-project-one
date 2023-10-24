@@ -10,4 +10,4 @@ Compare the performance of process creation and destruction when implemented wit
 
 ✅　Linked list is more likely to result in slower because of dynamic memory management.
 
-   　Note : The main reason for the list-free implementation was to improve time-efficiency by avoiding the dynamic memory management needed for the linked lists.
+Note : The main reason for the list-free implementation was to improve time-efficiency by avoiding the dynamic memory management needed for the linked lists.
